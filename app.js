@@ -1,3 +1,11 @@
+/*
+TODO:
+    -Performance
+    -Full movement
+    -Flats rendering
+    -Settings control
+*/
+
 class Vec2D {
     constructor(x, y) {
         this.x = x;
@@ -29,7 +37,7 @@ class Global {
 }
 Global.ScrWidth = 800;
 Global.ScrHeight = 600;
-Global.wallHeight = 500;
+Global.wallHeight = 300;
 Global.resList = [
     {
         name: "BRICK1",
@@ -76,16 +84,16 @@ Global.map01 = {
 Global.lrot = new Mat2D(0, -1, 1, 0);
 Global.rrot = new Mat2D(0, 1, -1, 0);
 Global.debugScale = 100;
-class GameMapInfo {
-}
 class RenderScreen {
     constructor(parentId,w,h) {
         this.parentEl = document.getElementById(parentId);
         this.parentEl.width = w;
         this.parentEl.height = h;
         this.Mctx = this.parentEl.getContext("2d");
+
         this.w = w;
         this.h = h;
+
         this.buffCanvas = document.createElement("canvas");
         this.buffCanvas.width = w;
         this.buffCanvas.height = h;
@@ -93,7 +101,7 @@ class RenderScreen {
     }
     update() {
         this.Mctx.clearRect(0, 0, this.w, this.h);
-        this.Mctx.drawImage(this.buffCanvas, 0, 0);
+        this.Mctx.drawImage(this.buffCanvas, 0, 0,this.w, this.h);
     }
 }
 class Tile {
@@ -114,13 +122,12 @@ class GameMap {
             this.tiles[i] = new Tile(info.data[i]);
         }
     }
-    /*at(x: number, y: number): Tile {
-        return this.tiles[y * this.info.width + x];
-    }*/
     at(v) {
         return this.tiles[v.y * this.info.width + v.x];
     }
+    
 }
+
 class Player {
     constructor() {
         /*movement*/
@@ -136,7 +143,7 @@ class Player {
         this.right = false;
         this.pos = new Vec2D(1.5, 1.5);
         this.dir = new Vec2D(1, 0);
-        this.cam = new Vec2D(0, 0.66);
+        this.cam = new Vec2D(0, 1.3);
     }
     move() {
         if (this.counter != 0) {
@@ -154,7 +161,9 @@ class Player {
         else {
             if (this.up) {
                 this.dPos = mul(this.dir, this.speed);
-                if (!map.at(add(this.pos, this.dir)).blocking) {
+                let futurePos = floor(add(this.pos, this.dir));
+                let futureTile = map.at(futurePos);
+                if (!futureTile.blocking) {
                     this.moving = true;
                     this.counter = this.invSpeed;
                 }
@@ -162,7 +171,9 @@ class Player {
             }
             if (this.down) {
                 this.dPos = mul(this.dir, -this.speed);
-                if (!map.at(sub(this.pos, this.dir)).blocking) {
+                let futurePos = floor(sub(this.pos, this.dir));
+                let futureTile = map.at(futurePos);
+                if (!futureTile.blocking) {
                     this.moving = true;
                     this.counter = this.invSpeed;
                 }
@@ -209,22 +220,6 @@ class App {
         this.map.load(Global.map01);
         console.log("Placing player...");
         this.player = new Player();
-
-        //DEBUGGING code
-        this.debugInfo = document.getElementById("debugInfo");
-        this.debugDisplay = null;
-        if(document.getElementById("debugDisplay") != null)
-        {
-            this.debugDisplay = new RenderScreen("debugDisplay",this.map.info.width*Global.debugScale,this.map.info.height*Global.debugScale);
-        }
-    }
-    debugInfoAdd(string)
-    {
-        this.debugInfo.innerText += "   "+string;
-    }
-    debugInfoClear()
-    {
-        this.debugInfo.innerText = "";
     }
     drawScr()
     {
@@ -287,7 +282,7 @@ class App {
             zBuffer[col] = wall_dist;
             let wH = Global.wallHeight;
             let wall_height = Math.abs(Math.floor(wH / wall_dist));
-            let draw_start = -wall_height / 2 + wH / 2;
+            let draw_start = -wall_height / 2 + Global.ScrHeight / 2;
             wallX = Math.floor(wallX * this.map.at(tile).texW);
             if (horiz && rayDir.x > 0) {
                 wallX = this.map.at(tile).texW - wallX - 1;
@@ -309,29 +304,14 @@ class App {
             this.scr.update();
         }
     }
-    debugDraw()
-    {
-        this.debugDisplay.ctx.clearRect(0,0,this.debugDisplay.w,this.debugDisplay.h);
-        for(var y = 0; y < this.map.info.width; y++)
-        {
-            for(var x=0; x < this.map.height; x++)
-            {
-                if(this.map.at({x:x,y:y}).blocking)
-                    this.debugDisplay.ctx.strokeRect(x*Global.debugScale,y*Global.debugScale,Global.debugScale,Global.debugScale);
-            }
-        }
-        this.debugDisplay.update();
-    }
 }
 
 let app = new App();
 function loop()
 {
     requestAnimationFrame(loop);
-    if(app.debugInfo)app.debugInfoClear();
-	app.player.update();
+	app.player.update(app.map);
     app.drawScr();
-    if(app.debugDisplay)app.debugDraw();
 }
 window.onload = () => {
     app.init();
