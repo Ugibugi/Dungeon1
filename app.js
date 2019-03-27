@@ -1,6 +1,5 @@
 /*
 TODO:
-    -Performance
     -Full movement
     -Flats rendering
     -Settings control
@@ -33,6 +32,39 @@ class Mat2D {
 function trans(mat, v) {
     return add(mul(mat.left, v.x), mul(mat.right, v.y));
 }
+
+
+class DebugInfo
+{
+    constructor(id)
+    {
+        this.element = document.createElement("div");
+        this.element.id = id;
+    }
+    init()
+    {
+        document.body.appendChild(this.element);
+    }
+    log(varName,val)
+    {
+        let el = document.getElementById(varName);
+        if(el == null)
+        {
+            el = document.createElement("div");
+            el.id = varName;
+            this.element.appendChild(el);
+        }
+        el.innerText = varName + " = " + val;
+    } 
+}
+let debug = new DebugInfo("debug");
+let dlastdraw=performance.now();
+
+
+
+
+
+
 class Global {
 }
 Global.ScrWidth = 800;
@@ -84,6 +116,7 @@ Global.map01 = {
 Global.lrot = new Mat2D(0, -1, 1, 0);
 Global.rrot = new Mat2D(0, 1, -1, 0);
 Global.debugScale = 100;
+
 class RenderScreen {
     constructor(parentId,w,h) {
         this.parentEl = document.getElementById(parentId);
@@ -223,10 +256,12 @@ class App {
     }
     drawScr()
     {
+        let ddrawStart = performance.now();
         this.scr.ctx.clearRect(0, 0, Global.ScrWidth, Global.ScrHeight);
         let W = Global.ScrWidth;
         let zBuffer = [];
-        for (var col = 0; col < W; col++) {
+        for (var col = 0; col < W; col++)
+        {
             let camX = 2 * col / W - 1;
             let rayStart = this.player.pos;
             let rayDir = add(mul(this.player.cam, camX), this.player.dir);
@@ -301,8 +336,15 @@ class App {
             tint = 1 - tint;
             this.scr.ctx.fillStyle = "rgba(" + c + ", " + c + ", " + c + ", " + tint + ")";
             this.scr.ctx.fillRect(col, draw_start, 1, wall_height);
-            this.scr.update();
+            
+
+            
         }
+
+        let ddelta = ddrawStart - dlastdraw;
+        dlastdraw = ddrawStart;
+        debug.log("FrameTime",ddelta);
+        this.scr.update();
     }
 }
 
@@ -315,6 +357,7 @@ function loop()
 }
 window.onload = () => {
     app.init();
+    debug.init();
     document.getElementById("up").onclick = () => {
         app.player.up = true;
     }
