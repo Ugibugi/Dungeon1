@@ -17,21 +17,23 @@ class ResourceManager {
 class RenderScreen {
     constructor(parentId,w,h) {
         this.parentEl = document.getElementById(parentId);
-        this.parentEl.width = w;
-        this.parentEl.height = h;
+        this.parentEl.width = Global.scaledWidth;
+        this.parentEl.height = Global.scaledHeight;
         this.Mctx = this.parentEl.getContext("2d");
 
-        this.w = w;
-        this.h = h;
+        this.w = Global.ScrWidth;
+        this.h = Global.ScrHeight;
+        this.sw = Global.scaledWidth;
+        this.sh = Global.scaledHeight;
 
         this.buffCanvas = document.createElement("canvas");
-        this.buffCanvas.width = w;
-        this.buffCanvas.height = h;
+        this.buffCanvas.width = this.w;
+        this.buffCanvas.height = this.h;
         this.ctx = this.buffCanvas.getContext("2d");
     }
     update() {
-        this.Mctx.clearRect(0, 0, this.w, this.h);
-        this.Mctx.drawImage(this.buffCanvas, 0, 0,this.w, this.h);
+        this.Mctx.clearRect(0, 0, this.sw, this.sh);
+        this.Mctx.drawImage(this.buffCanvas, 0, 0,this.sw, this.sh);
     }
     drawScr(player,map,resMgr)
     {

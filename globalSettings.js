@@ -1,8 +1,10 @@
 class Global {
 }
-Global.ScrWidth = 800;
-Global.ScrHeight = 600;
-Global.wallHeight = 300
+Global.ScrWidth = 320;
+Global.ScrHeight = 240;
+Global.scaledWidth = 800;
+Global.scaledHeight = 600;
+Global.wallHeight = Global.ScrHeight/2
 Global.resList = [
     {
         name: "BRICK1",
