@@ -2,15 +2,15 @@ class Global {
 }
 Global.ScrWidth = 800;
 Global.ScrHeight = 600;
-Global.wallHeight = 300;
+Global.wallHeight = 300
 Global.resList = [
     {
         name: "BRICK1",
-        path: "res/wall.jpg"
+        path: "res/LQwall.jpg"
     },
     {
         name:"BRICK2",
-        path: "res/bricks2.jpg"
+        path: "res/LQbricks.jpg"
     }
 ];
 Global.tileTypes = [
@@ -24,13 +24,13 @@ Global.tileTypes = [
     {
         blocking: true,
         texName: "BRICK1",
-        texW: 256
+        texW: 64
     }
     //2
     ,{
         blocking: true,
         texName: "BRICK2",
-        texW: 1024
+        texW: 64
     }
 ];
 Global.map01 = {
