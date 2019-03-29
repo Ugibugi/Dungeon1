@@ -3,6 +3,12 @@ TODO:
     -Full movement
     -Flats rendering
     -Settings control
+    -Doors
+    -Messages
+    -Time
+    -Objects
+    -Creatures
+
 */
 
 class Vec2D {
@@ -20,8 +26,14 @@ function sub(v1, v2) {
 function mul(v1, t) {
     return new Vec2D(v1.x * t, v1.y * t);
 }
+function div(v1, t) {
+    return new Vec2D(v1.x / t, v1.y / t);
+}
 function floor(v) {
     return new Vec2D(Math.floor(v.x), Math.floor(v.y));
+}
+function round(v) {
+    return new Vec2D(Math.round(v.x), Math.round(v.y));
 }
 class Mat2D {
     constructor(a, b, c, d) {
@@ -31,6 +43,10 @@ class Mat2D {
 }
 function trans(mat, v) {
     return add(mul(mat.left, v.x), mul(mat.right, v.y));
+}
+function matmul(mat,t)
+{
+    return new Mat2D(mat.left.x*t,mat.right.x*t,mat.left.y*t,mat.right.y*t);
 }
 
 
@@ -113,8 +129,13 @@ Global.map01 = {
     width: 10,
     height: 7
 };
-Global.lrot = new Mat2D(0, -1, 1, 0);
-Global.rrot = new Mat2D(0, 1, -1, 0);
+let th= 0.1508 //9 degrees 1/10 of a turn
+Global.lrot = new Mat2D(Math.cos(th), -Math.sin(th), Math.sin(th), Math.cos(th));
+Global.rrot = new Mat2D(Math.cos(-th), -Math.sin(-th), Math.sin(-th), Math.cos(-th));
+
+Global.l90rot = new Mat2D(0, -1, 1, 0);
+Global.r90rot = new Mat2D(0, 1, -1, 0);
+
 Global.debugScale = 100;
 
 class RenderScreen {
@@ -167,7 +188,6 @@ class Player {
         this.speed = 0.1;
         this.invSpeed = 10;
         this.counter = 0;
-        this.rotspeed = 0.05;
         this.moving = false;
         /*input*/
         this.up = false;
@@ -177,6 +197,12 @@ class Player {
         this.pos = new Vec2D(1.5, 1.5);
         this.dir = new Vec2D(1, 0);
         this.cam = new Vec2D(0, 1.3);
+
+        this.rotating = false;
+        this.rotCount = 0;
+        this.rotspeed = 0.1;
+        this.invrotspd = 10;
+        
     }
     move() {
         if (this.counter != 0) {
@@ -187,7 +213,23 @@ class Player {
             this.moving = false;
         }
     }
-    update(map) {
+    rotate()
+    {
+        if (this.rotCount != 0) {
+            this.rotCount--;
+            this.dir = trans(this.trn, this.dir);
+            this.cam = trans(this.trn, this.cam);
+        }
+        else {
+            
+            this.dir = round(this.dir);
+            this.cam = round(this.cam);
+            this.rotating = false;
+        }
+
+    }
+    update(map)
+    {
         if (this.moving) {
             this.move();
         }
@@ -212,17 +254,30 @@ class Player {
                 }
                 this.down = false;
             }
-            if (this.left) {
-                this.dir = trans(Global.lrot, this.dir);
-                this.cam = trans(Global.lrot, this.cam);
-                this.left = false;
+            if(this.rotating)
+            {
+                this.rotate();
             }
-            if (this.right) {
-                this.dir = trans(Global.rrot, this.dir);
-                this.cam = trans(Global.rrot, this.cam);
-                this.right = false;
+            else{
+
+                if (this.left) {
+                    this.trn = Global.lrot;
+            
+                    this.rotCount = this.invrotspd;
+                    this.rotating = true;
+                    this.left = false;
+                }
+                if (this.right) {
+                    this.trn = Global.rrot;
+
+                    this.rotCount = this.invrotspd;
+                    this.rotating = true;
+                    this.right = false;
+                }
             }
         }
+        
+        
     }
 }
 class ResourceManager {
@@ -259,6 +314,22 @@ class App {
         let ddrawStart = performance.now();
         this.scr.ctx.clearRect(0, 0, Global.ScrWidth, Global.ScrHeight);
         let W = Global.ScrWidth;
+        let H = Global.ScrHeight;
+        
+        var grad = this.scr.ctx.createLinearGradient(0, H / 2, 0, H);
+        grad.addColorStop(0, "rgb(0,0,0)");
+        grad.addColorStop(1, "rgb(80,80,80)");
+        this.scr.ctx.fillStyle = grad
+        this.scr.ctx.fillRect(0, H / 2, W, H / 2);
+
+
+        grad =this.scr.ctx.createLinearGradient(0, 0, 0, H / 2);
+        grad.addColorStop(0, "rgb(80,80,80)");
+        grad.addColorStop(1, "rgb(0,0,0)");
+        this.scr.ctx.fillStyle = grad
+        this.scr.ctx.fillRect(0, 0, W, H / 2);
+
+
         let zBuffer = [];
         for (var col = 0; col < W; col++)
         {
@@ -327,6 +398,10 @@ class App {
             }
             let tex = this.res.getTex(this.map.at(tile).texName);
             this.scr.ctx.drawImage(tex, wallX, 0, 1, tex.height, col, draw_start, 1, wall_height);
+
+
+
+
             var tint = (wall_height * 1.6) / wH;
             var c = Math.round(60 / tint);
             c = 60 - c;
@@ -340,7 +415,6 @@ class App {
 
             
         }
-
         let ddelta = ddrawStart - dlastdraw;
         dlastdraw = ddrawStart;
         debug.log("FrameTime",ddelta);
