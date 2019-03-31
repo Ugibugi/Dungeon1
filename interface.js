@@ -30,6 +30,8 @@ class RenderScreen {
         this.buffCanvas.width = inW;
         this.buffCanvas.height = inH;
         this.ctx = this.buffCanvas.getContext("2d");
+
+        
     }
     update() {
         this.Mctx.clearRect(0, 0, this.outW, this.outH);
@@ -187,7 +189,10 @@ class RenderScreen {
 
         let ddelta = ddrawStart - dlastdraw;
         dlastdraw = ddrawStart;
-        debug.log("FrameTime",ddelta);
+        //this.ctx.font = "10 Verdana";
+        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillText("FPS: "+Math.floor(1000/ddelta),1,10)
+       // debug.log("FrameTime",ddelta);
         this.update();
     }
 }

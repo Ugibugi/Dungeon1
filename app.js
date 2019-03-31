@@ -8,9 +8,6 @@ TODO:
     -Time
     -Objects 
     -Creatures
-
-    -Fix flickering sprites
-
 */
 
 class App {
