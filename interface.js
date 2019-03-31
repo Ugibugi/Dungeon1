@@ -144,25 +144,29 @@ class RenderScreen {
         for(let i in map.objects)
         {
             let distVec = sub(player.pos,map.objects[i].pos)
-            sqDist = distVec.x*distVec.x + distVec.y*distVec.y;
+            let sqd =distVec.x*distVec.x + distVec.y*distVec.y;
+            sqDist.push({dist: sqd, ind:i});
         }
+        sqDist.sort((a,b) => {return b.dist-a.dist});
+        
         let camMat = new Mat2D(player.cam.x,player.dir.x,player.cam.y,player.dir.y);
         let invCamMat = inv(camMat);
-        for(let i in map.objects)
+        for(let it in sqDist)
         {
+            let i = sqDist[it].ind;
             let distVec = sub(map.objects[i].pos,player.pos);
             let transVec = trans(invCamMat,distVec);
 
             let spriteX = Math.floor( (W/2) * (1+transVec.x/transVec.y));
             
             let spriteH = Math.abs(Math.floor(H/(transVec.y*2)));
-            let drawStartY = -spriteH/2 + H/2;
+            let drawStartY = Math.floor(-spriteH/2 + H/2);
             if(drawStartY < 0) drawStartY =0;
             let drawEndY = spriteH / 2 + H / 2;
             if(drawEndY >= H) drawEndY = H - 1;
 
             let spriteW = Math.abs(Math.floor(H/(transVec.y*2)));
-            let drawStartX = -spriteW/2 + spriteX;
+            let drawStartX = Math.floor(-spriteW/2 + spriteX);
             if(drawStartX<0)drawStartX =0;
             let drawEndX = spriteW/2 + spriteX;
             if(drawEndX >=W) drawEndX = W-1;
@@ -174,6 +178,7 @@ class RenderScreen {
                 {
                     let texX = Math.floor((stripe - (-spriteW / 2 + spriteX)) * tex.width / spriteW);
                     this.ctx.drawImage(tex,texX,0,1,tex.height,stripe,drawStartY,1,spriteH);
+                    zBuffer[stripe] = transVec.y;
                 }
             }
 
@@ -185,4 +190,8 @@ class RenderScreen {
         debug.log("FrameTime",ddelta);
         this.update();
     }
+}
+function sortObj(array,fun)
+{
+    array.sort()
 }
