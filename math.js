@@ -26,6 +26,11 @@ class Mat2D {
     constructor(a, b, c, d) {
         this.left = new Vec2D(a, c);
         this.right = new Vec2D(b, d);
+
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
     }
 }
 function trans(mat, v) {
@@ -34,4 +39,15 @@ function trans(mat, v) {
 function matmul(mat,t)
 {
     return new Mat2D(mat.left.x*t,mat.right.x*t,mat.left.y*t,mat.right.y*t);
+}
+function det(mat)
+{
+    return (mat.a * mat.d) - (mat.b*mat.c);
+}
+function inv(mat)
+{
+    let matDT = new Mat2D(mat.d,-mat.b,-mat.c,mat.a);
+    let invDet = 1/det(mat);
+
+    return matmul(matDT,invDet);
 }

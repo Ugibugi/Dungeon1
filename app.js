@@ -6,8 +6,10 @@ TODO:
     -Doors
     -Messages
     -Time
-    -Objects
+    -Objects 
     -Creatures
+
+    -Fix flickering sprites
 
 */
 
@@ -19,7 +21,7 @@ class App {
         console.log("Starting Resource Manager...");
         this.res = new ResourceManager();
         console.log("Starting Screen...");
-        this.scr = new RenderScreen("display",Global.ScrWidth,Global.ScrHeight);
+        this.scr = new RenderScreen("display",Global.ScrWidth,Global.ScrHeight,Global.innerWidth,Global.innerHeight);
         console.log("Loading map...");
         this.map = new GameMap();
         this.map.load(Global.map01);

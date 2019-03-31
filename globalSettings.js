@@ -1,37 +1,59 @@
 class Global {
 }
-Global.ScrWidth = 320;
-Global.ScrHeight = 240;
-Global.scaledWidth = 800;
-Global.scaledHeight = 600;
-Global.wallHeight = Global.ScrHeight/2
+Global.ScrWidth = 800;
+Global.ScrHeight = 600;
+Global.innerWidth = 320;
+Global.innerHeight = 240;
 Global.resList = [
     {
+        type: "texture",
         name: "BRICK1",
-        path: "res/LQwall.jpg"
+        path: "res/dLQwall.jpg"
     },
     {
+        type: "texture",
         name:"BRICK2",
-        path: "res/LQbricks.jpg"
+        path: "res/dLQbricks.jpg"
+    },
+    {
+        type: "animated",
+        name: "TORCH1",
+        path: "res/TRED.png",
+        frames: 2,
     }
 ];
+Global.objTypes = [
+    {
+        name: "TORCH_R",
+        texName: "TORCH1",
+        blocking: true,
+        
+    }
+]
 Global.tileTypes = [
     //0
     {
+        num: 0,
         blocking: false,
         texName: "NONE",
+       
         texW: 0
+        
     },
     //1
     {
+        num: 1,
         blocking: true,
         texName: "BRICK1",
+        solid:true,
         texW: 64
     }
     //2
     ,{
+        num:2,
         blocking: true,
         texName: "BRICK2",
+        solid:true,
         texW: 64
     }
 ];
@@ -43,10 +65,63 @@ Global.map01 = {
         1, 0, 0, 0, 1, 0, 1, 1, 0, 1,
         1, 0, 1, 1, 1, 0, 0, 1, 0, 1,
         1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     ],
     width: 10,
-    height: 7
+    height: 9,
+    objects: [
+        {
+            name: "TORCH_R",
+            place:{
+                x:3,
+                y:3
+            }
+        },
+        {
+            name: "TORCH_R",
+            place:{
+                x:6,
+                y:2
+            }
+        },
+        {
+            name: "TORCH_R",
+            place:{
+                x:6,
+                y:4
+            }
+        },
+        {
+            name: "TORCH_R",
+            place:{
+                x:6,
+                y:7
+            }
+        },
+        {
+            name: "TORCH_R",
+            place:{
+                x:7,
+                y:7
+            }
+        },
+        {
+            name: "TORCH_R",
+            place:{
+                x:8,
+                y:7
+            }
+        },
+        {
+            name: "TORCH_R",
+            place:{
+                x:9,
+                y:7
+            }
+        }
+    ]
 };
 th= 0.1508 //9 degrees 1/10 of a turn
 Global.lrot = new Mat2D(Math.cos(th), -Math.sin(th), Math.sin(th), Math.cos(th));
@@ -56,7 +131,13 @@ Global.l90rot = new Mat2D(0, -1, 1, 0);
 Global.r90rot = new Mat2D(0, 1, -1, 0);
 
 Global.debugScale = 100;
-
+function getObjectType(objname)
+{
+    for(let i in Global.objTypes)
+    {
+        if(Global.objTypes[i].name == objname) return Global.objTypes[i];
+    }
+}
 class DebugInfo
 {
     constructor(id)
