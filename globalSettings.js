@@ -26,6 +26,14 @@ Global.objTypes = [
     {
         name: "TORCH_R",
         texName: "TORCH1",
+        alt: null,
+        blocking: true,
+        
+    },
+    {
+        name: "WDOOR",
+        texName: "TORCH1",
+        alt: null,
         blocking: true,
         
     }
@@ -72,6 +80,13 @@ Global.map01 = {
     width: 10,
     height: 9,
     objects: [
+        {
+            name: "WDOOR",
+            place:{
+                x:5,
+                y:3
+            }
+        },
         {
             name: "TORCH_R",
             place:{

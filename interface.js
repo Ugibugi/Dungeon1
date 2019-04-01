@@ -2,9 +2,34 @@
 class ResourceManager {
     constructor() {
         this.textures = new Array();
+        this.animated = new Array();
         for (let i of Global.resList) {
+
             this.textures[i.name] = new Image();
             this.textures[i.name].src = i.path;
+            if(i.type == "animated")
+            {
+                this.animated[i.name] = [];
+                this.animated[i.name][0] = i.path;
+
+
+                let ppath = i.path.split('.');
+                for(let it = 1;it<i.frames;it++)
+                {
+                    this.animated[i.name][it] = ppath[0] + it +"."+ppath[1]; 
+                }
+                this.animated[i.name].frames = i.frames
+                this.animated[i.name].currFrame =0;
+            }
+        }
+    }
+    updateFrames()
+    {
+        for(let i in this.animated)
+        {
+            this.animated[i].currFrame++;
+            if(this.animated[i].currFrame == this.animated[i].frames) this.animated[i].currFrame = 0;
+            this.textures[i].src = this.animated[i][this.animated[i].currFrame];
         }
     }
     getTex(name) {
@@ -12,6 +37,7 @@ class ResourceManager {
             console.log("Warning [ResMgr]: Attempted to get NONE texture");
         return this.textures[name];
     }
+
 }
 
 class RenderScreen {
@@ -30,6 +56,7 @@ class RenderScreen {
         this.buffCanvas.width = inW;
         this.buffCanvas.height = inH;
         this.ctx = this.buffCanvas.getContext("2d");
+        this.framesTotal = 0;
 
         
     }
@@ -193,6 +220,9 @@ class RenderScreen {
         this.ctx.fillStyle = "#FFFFFF";
         this.ctx.fillText("FPS: "+Math.floor(1000/ddelta),1,10)
        // debug.log("FrameTime",ddelta);
+        this.framesTotal++
+        if((this.framesTotal % 10) == 0)resMgr.updateFrames();
+
         this.update();
     }
 }
