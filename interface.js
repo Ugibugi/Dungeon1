@@ -146,14 +146,19 @@ class RenderScreen {
             let wH = H/2;
             let wall_height = Math.abs(Math.floor(wH / wall_dist));
             let draw_start = -wall_height / 2 + H / 2;
-            wallX = Math.floor(wallX * map.at(tile).texW);
+
+            let tex = resMgr.getTex(map.at(tile).texName);
+
+            let texW = map.at(tile).texW;
+            if(texW == "full") texW = tex.width;
+            wallX = Math.floor(wallX * texW);
             if (horiz && rayDir.x > 0) {
-                wallX = map.at(tile).texW - wallX - 1;
+                wallX = texW - wallX - 1;
             }
             if (!horiz && rayDir.y < 0) {
-                wallX = map.at(tile).texW - wallX - 1;
+                wallX = texW - wallX - 1;
             }
-            let tex = resMgr.getTex(map.at(tile).texName);
+            
             this.ctx.drawImage(tex, wallX, 0, 1, tex.height, col, draw_start, 1, wall_height);
 
 

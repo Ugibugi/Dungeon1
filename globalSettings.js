@@ -13,14 +13,25 @@ Global.resList = [
     {
         type: "texture",
         name:"BRICK2",
-        path: "res/dLQbricks.jpg"
+        path: "res/LQbricks.jpg"
+    },
+    {
+        type: "texture",
+        name: "AWALL",
+        path: "res/LQwall.jpg"
     },
     {
         type: "animated",
         name: "TORCH1",
         path: "res/TRED.png",
         frames: 2,
+    },
+    {
+        type: "texture",
+        name: "DOOR1",
+        path: "res/DOR2C.png"
     }
+
 ];
 Global.objTypes = [
     {
@@ -32,12 +43,12 @@ Global.objTypes = [
     },
     {
         name: "WDOOR",
-        texName: "TORCH1",
+        texName: "DOOR1",
         alt: null,
         blocking: true,
         
     }
-]
+];
 Global.tileTypes = [
     //0
     {
@@ -52,9 +63,9 @@ Global.tileTypes = [
     {
         num: 1,
         blocking: true,
-        texName: "BRICK1",
+        texName: "AWALL",
         solid:true,
-        texW: 64
+        texW: "full"
     }
     //2
     ,{
@@ -62,7 +73,7 @@ Global.tileTypes = [
         blocking: true,
         texName: "BRICK2",
         solid:true,
-        texW: 64
+        texW: "full"
     }
 ];
 Global.map01 = {
