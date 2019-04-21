@@ -47,25 +47,36 @@ function loop()
 }
 function moveAI(entity)
 {
-    //console.log("Log [AIFunc]: called with pos = "+entity.pos.x+", "+entity.pos.y);
-    let deltaX = app.player.pos.x - entity.pos.x;
-    let deltaY = app.player.pos.y - entity.pos.y;
+    console.log("Log [AIFunc]: called with pos = "+entity.pos.x+", "+entity.pos.y);
+    let deltaPos = sub(app.player.pos, entity.pos);
     let destDelta = new Vec2D(0,0);
-    if(deltaX < 0) destDelta.x--;
-    else destDelta.x++;
-    if(deltaY < 0)destDelta.y--;
-    else destDelta.y++;
 
-    let destPos = add(entity.pos,destDelta);
-    let destTile = app.map.at(destPos);
-    if(destTile.solid || destTile.blocking) return;
-    else 
-    {
-        app.map.at(entity.pos).clearObj();
-        app.map.at(destPos).place(entity);
-        entity.pos = destPos;
+    if(sqSum(round(deltaPos)) == 1)
+    {//attack
+        console.log("        attacking Player");
     }
+    else
+    {//move
+        if(deltaPos.x < 0) destDelta.x--;
+        else if(deltaPos.x > 0) destDelta.x++;
+        if(deltaPos.y < 0)destDelta.y--;
+        else if(deltaPos.y > 0)destDelta.y++;
 
+        let destPos = add(entity.pos,destDelta);
+        let destTile = app.map.at(destPos);
+        if(destTile.solid || destTile.blocking)
+        {
+            console.log("        moving failed");
+            return;
+        }
+        else 
+        {
+            console.log("        moving");
+            app.map.at(entity.pos).clearObj();
+            app.map.at(destPos).place(entity);
+            entity.pos = destPos;
+        }
+    }
 }
 window.onload = () => {
     app.init();

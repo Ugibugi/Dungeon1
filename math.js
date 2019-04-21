@@ -16,6 +16,10 @@ function mul(v1, t) {
 function div(v1, t) {
     return new Vec2D(v1.x / t, v1.y / t);
 }
+function sqSum(v)
+{
+    return (v.x*v.x) + (v.y*v.y);
+}
 function floor(v) {
     return new Vec2D(Math.floor(v.x), Math.floor(v.y));
 }
