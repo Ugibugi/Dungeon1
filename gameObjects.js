@@ -7,22 +7,41 @@ class Obj
         this.pos.y = info.place.y + 0.5;
         this.name = info.name;
 
-        let proto = getObjectType(info.name);
+        this.setProto(info.name);
+    }
+    setProto(protoName)
+    {
+        if(protoName == null)
+        {
+            console.log("Error [ObjConstruct]: null prototype name");
+            return;
+        }
+        let proto = getObjectType(protoName);
+        this.alt = proto.alt;
         this.blocking = proto.blocking;
         this.texName = proto.texName;
-        if(proto.doFunc == "nothing")
+        if(proto.doFunc == null)
         {
             this.doFunc = function(){return;};
         }
-        if(proto.doFunc == "AI")
+        else if(proto.doFunc == "AI")
         {
             this.doFunc = function()
             {
                 moveAI(this);
             };
         }
+        if(proto.useFunc == null)
+        {
+            this.useFunc = () => {return;};
+        }
+        else if(proto.useFunc == "alter")
+        {
+            this.useFunc = () => {
+                this.setProto(this.alt)
+            }
+        }
     }
-    
 }
 
 class Tile {
@@ -44,13 +63,18 @@ class Tile {
     }
     clearObj()
     {
-        this.object =null;
+        this.object = null;
         this.hasObject = false;
         this.blocking = false;
     }
-    use()
+    update()
     {
-        return;
+        this.texName = Global.tileTypes[this.type].texName;
+        this.texW = Global.tileTypes[this.type].texW;
+        this.blocking = Global.tileTypes[this.type].blocking;
+        this.solid = Global.tileTypes[this.type].solid;
+
+        if(this.object !=null && this.object.blocking)this.blocking = true;
     }
 }
 class GameMap {
@@ -92,6 +116,7 @@ class Player {
         this.pos = new Vec2D(1.5, 1.5);
         this.dir = new Vec2D(1, 0);
         this.cam = new Vec2D(0, 1.3);
+        this.use = false;
 
         this.rotating = false;
         this.rotCount = 0;
@@ -174,6 +199,18 @@ class Player {
                     this.rotating = true;
                     this.right = false;
                 }
+            }
+            if(this.use)
+            {
+                let usedTile = map.at(floor(add(this.pos, this.dir)));
+                let usedObj = usedTile.object;
+                if(usedObj != null)
+                {
+                    usedObj.useFunc();
+                }
+                usedTile.update();
+                this.use = false;
+                turnUsed = true;
             }
         }
         return turnUsed;

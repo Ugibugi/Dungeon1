@@ -90,7 +90,9 @@ window.onload = () => {
     document.getElementById("rot_left").onclick = () => {
         app.player.left = true; 
     }
-
+    document.getElementById("display").onclick = () => {
+        app.player.use = true;
+    }
     loop();
     
 };

@@ -33,10 +33,17 @@ Global.resList = [
     },
     {
         type: "texture",
+        name: "DOOR1O",
+        path : "res/DOR2O.bmp"
+    },
+    {
+        type: "texture",
         name: "STICK1",
         path:" res/stick.png"
     }
 
+
+    
 ];
 Global.objTypes = [
     {
@@ -44,22 +51,32 @@ Global.objTypes = [
         texName: "TORCH1",
         alt: null,
         blocking: true,
-        doFunc: "nothing"
-        
+        doFunc: null,
+        useFunc: null
     },
     {
         name: "WDOOR",
         texName: "DOOR1",
-        alt: null,
+        alt: "WD_OPEN",
         blocking: true,
-        doFunc: "nothing"
+        doFunc: null,
+        useFunc: "alter"
+    },
+    {
+        name: "WD_OPEN",
+        texName: "DOOR1O",
+        alt: "WDOOR",
+        blocking: false,
+        doFunc: null,
+        useFunc: "alter"
     },
     {
         name:"D_STICK",
         texName: "STICK1",
         alt: null,
         blocking: true,
-        doFunc: "AI"
+        doFunc: "AI",
+        useFunc: null
     }
 
 ];
