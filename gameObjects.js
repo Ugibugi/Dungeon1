@@ -10,7 +10,19 @@ class Obj
         let proto = getObjectType(info.name);
         this.blocking = proto.blocking;
         this.texName = proto.texName;
+        if(proto.doFunc == "nothing")
+        {
+            this.doFunc = function(){return;};
+        }
+        if(proto.doFunc == "AI")
+        {
+            this.doFunc = function()
+            {
+                moveAI(this);
+            };
+        }
     }
+    
 }
 
 class Tile {
@@ -30,7 +42,16 @@ class Tile {
         if(obj.blocking)this.blocking = true;
 
     }
-    
+    clearObj()
+    {
+        this.object =null;
+        this.hasObject = false;
+        this.blocking = false;
+    }
+    use()
+    {
+        return;
+    }
 }
 class GameMap {
     constructor() {
@@ -104,10 +125,12 @@ class Player {
     }
     update(map)
     {
+        let turnUsed = false;
         if (this.moving) {
             this.move();
         }
-        else {
+        else
+        {
             if (this.up) {
                 this.dPos = mul(this.dir, this.speed);
                 let futurePos = floor(add(this.pos, this.dir));
@@ -117,6 +140,7 @@ class Player {
                     this.counter = this.invSpeed;
                 }
                 this.up = false;
+                turnUsed = true;
             }
             if (this.down) {
                 this.dPos = mul(this.dir, -this.speed);
@@ -127,12 +151,14 @@ class Player {
                     this.counter = this.invSpeed;
                 }
                 this.down = false;
+                turnUsed = true;
             }
             if(this.rotating)
             {
                 this.rotate();
             }
-            else{
+            else
+            {
 
                 if (this.left) {
                     this.trn = Global.lrot;
@@ -150,7 +176,6 @@ class Player {
                 }
             }
         }
-        
-        
+        return turnUsed;
     }
 }

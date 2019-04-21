@@ -64,14 +64,10 @@ class RenderScreen {
         this.Mctx.clearRect(0, 0, this.outW, this.outH);
         this.Mctx.drawImage(this.buffCanvas, 0, 0,this.outW, this.outH);
     }
-    drawScr(player,map,resMgr)
+    renderGeometry(player, map,resMgr)
     {
-        let ddrawStart = performance.now();
         let W = this.inW;
         let H = this.inH;
-        this.ctx.clearRect(0, 0,W, H);
-        
-        
         var grad = this.ctx.createLinearGradient(0, H / 2, 0, H);
         grad.addColorStop(0, "rgb(0,0,0)");
         grad.addColorStop(1, "rgb(80,80,80)");
@@ -86,7 +82,7 @@ class RenderScreen {
         this.ctx.fillRect(0, 0, W, H / 2);
 
 
-        let zBuffer = [];
+        this.zBuffer = [];
         for (var col = 0; col < W; col++)
         {
             let camX = 2 * col / W - 1;
@@ -142,7 +138,7 @@ class RenderScreen {
             }
             wallX -= Math.floor(wallX);
             wall_dist = Math.abs(wall_dist);
-            zBuffer[col] = wall_dist;
+            this.zBuffer[col] = wall_dist;
             let wH = H/2;
             let wall_height = Math.abs(Math.floor(wH / wall_dist));
             let draw_start = -wall_height / 2 + H / 2;
@@ -161,9 +157,6 @@ class RenderScreen {
             
             this.ctx.drawImage(tex, wallX, 0, 1, tex.height, col, draw_start, 1, wall_height);
 
-
-
-
             var tint = (wall_height * 1.6) / wH;
             var c = Math.round(60 / tint);
             c = 60 - c;
@@ -174,6 +167,11 @@ class RenderScreen {
             this.ctx.fillStyle = "rgba(" + c + ", " + c + ", " + c + ", " + tint + ")";
             this.ctx.fillRect(col, draw_start, 1, wall_height);
         }
+    }
+    renderSprites(player,map,resMgr)
+    {
+        let W = this.inW;
+        let H = this.inH;
         let sqDist = []
         for(let i in map.objects)
         {
@@ -208,23 +206,30 @@ class RenderScreen {
             let tex = resMgr.getTex(map.objects[i].texName);
             for(let stripe = drawStartX;stripe <drawEndX;stripe++)
             {
-                if(transVec.y > 0 && stripe > 0  && stripe < W && transVec.y < zBuffer[stripe])
+                if(transVec.y > 0 && stripe > 0  && stripe < W && transVec.y < this.zBuffer[stripe])
                 {
                     let texX = Math.floor((stripe - (-spriteW / 2 + spriteX)) * tex.width / spriteW);
                     this.ctx.drawImage(tex,texX,0,1,tex.height,stripe,drawStartY,1,spriteH);
-                    zBuffer[stripe] = transVec.y;
+                    this.zBuffer[stripe] = transVec.y;
                 }
             }
 
-
         }
-
+    }
+    drawScr(player,map,resMgr)
+    {
+        let ddrawStart = performance.now();
+        let W = this.inW;
+        let H = this.inH;
+        this.ctx.clearRect(0, 0,W, H);
+        this.renderGeometry(player,map,resMgr);
+        this.renderSprites(player,map,resMgr);
+       
         let ddelta = ddrawStart - dlastdraw;
         dlastdraw = ddrawStart;
         //this.ctx.font = "10 Verdana";
         this.ctx.fillStyle = "#FFFFFF";
         this.ctx.fillText("FPS: "+Math.floor(1000/ddelta),1,10)
-       // debug.log("FrameTime",ddelta);
         this.framesTotal++
         if((this.framesTotal % 10) == 0)resMgr.updateFrames();
 

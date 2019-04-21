@@ -30,6 +30,11 @@ Global.resList = [
         type: "texture",
         name: "DOOR1",
         path: "res/DOR2C.png"
+    },
+    {
+        type: "texture",
+        name: "STICK1",
+        path:" res/stick.png"
     }
 
 ];
@@ -39,6 +44,7 @@ Global.objTypes = [
         texName: "TORCH1",
         alt: null,
         blocking: true,
+        doFunc: "nothing"
         
     },
     {
@@ -46,8 +52,16 @@ Global.objTypes = [
         texName: "DOOR1",
         alt: null,
         blocking: true,
-        
+        doFunc: "nothing"
+    },
+    {
+        name:"D_STICK",
+        texName: "STICK1",
+        alt: null,
+        blocking: true,
+        doFunc: "AI"
     }
+
 ];
 Global.tileTypes = [
     //0
@@ -55,7 +69,6 @@ Global.tileTypes = [
         num: 0,
         blocking: false,
         texName: "NONE",
-       
         texW: 0
         
     },
@@ -146,6 +159,13 @@ Global.map01 = {
                 x:9,
                 y:7
             }
+        },
+        {
+            name:"D_STICK",
+            place:{
+                x: 3,
+                y: 5
+            }
         }
     ]
 };
@@ -163,6 +183,7 @@ function getObjectType(objname)
     {
         if(Global.objTypes[i].name == objname) return Global.objTypes[i];
     }
+    console.log("Error [getObjectType]: couldn't find object definition for name: "+objname);
 }
 class DebugInfo
 {

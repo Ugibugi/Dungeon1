@@ -27,7 +27,13 @@ class App {
     }
     update()
     {
-        this.player.update(this.map);
+        if(this.player.update(this.map))
+        {
+            for(let it in this.map.objects)
+            {
+                this.map.objects[it].doFunc();
+            }
+        }
     }
 }
     
@@ -38,6 +44,28 @@ function loop()
     requestAnimationFrame(loop);
 	app.update();
     app.scr.drawScr(app.player,app.map,app.res);
+}
+function moveAI(entity)
+{
+    //console.log("Log [AIFunc]: called with pos = "+entity.pos.x+", "+entity.pos.y);
+    let deltaX = app.player.pos.x - entity.pos.x;
+    let deltaY = app.player.pos.y - entity.pos.y;
+    let destDelta = new Vec2D(0,0);
+    if(deltaX < 0) destDelta.x--;
+    else destDelta.x++;
+    if(deltaY < 0)destDelta.y--;
+    else destDelta.y++;
+
+    let destPos = add(entity.pos,destDelta);
+    let destTile = app.map.at(destPos);
+    if(destTile.solid || destTile.blocking) return;
+    else 
+    {
+        app.map.at(entity.pos).clearObj();
+        app.map.at(destPos).place(entity);
+        entity.pos = destPos;
+    }
+
 }
 window.onload = () => {
     app.init();
