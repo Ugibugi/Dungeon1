@@ -3,11 +3,8 @@ TODO:
     -Full movement
     -Flats rendering
     -Settings control
-    -Doors
     -Messages
     -Time
-    -Objects 
-    -Creatures
 */
 
 class App {
@@ -18,6 +15,8 @@ class App {
         console.log("Starting Resource Manager...");
         this.res = new ResourceManager();
         console.log("Starting Screen...");
+        Global.ScrWidth = document.getElementById("display").width;
+        Global.ScrHeight = document.getElementById("display").height;
         this.scr = new RenderScreen("display",Global.ScrWidth,Global.ScrHeight,Global.innerWidth,Global.innerHeight);
         console.log("Loading map...");
         this.map = new GameMap();
@@ -83,16 +82,26 @@ window.onload = () => {
     debug.init();
     document.getElementById("up").onclick = () => {
         app.player.up = true;
-    }
+    };
     document.getElementById("rot_right").onclick = () => {
         app.player.right = true;
-    }
+    };
     document.getElementById("rot_left").onclick = () => {
         app.player.left = true; 
-    }
+    };
     document.getElementById("display").onclick = () => {
         app.player.use = true;
-    }
+    };
+
+    document.getElementById("strafe_left").onclick = () => {
+        app.player.sleft = true;
+    };
+    document.getElementById("down").onclick = () => {
+        app.player.down = true;
+    };
+    document.getElementById("strafe_right").onclick = () => {
+        app.player.sright = true;
+    };
     loop();
     
 };

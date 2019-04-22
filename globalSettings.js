@@ -52,7 +52,8 @@ Global.objTypes = [
         alt: null,
         blocking: true,
         doFunc: null,
-        useFunc: null
+        useFunc: null,
+        stepFunc: null
     },
     {
         name: "WDOOR",
@@ -60,7 +61,8 @@ Global.objTypes = [
         alt: "WD_OPEN",
         blocking: true,
         doFunc: null,
-        useFunc: "alter"
+        useFunc: "alter",
+        stepFunc: null
     },
     {
         name: "WD_OPEN",
@@ -68,7 +70,8 @@ Global.objTypes = [
         alt: "WDOOR",
         blocking: false,
         doFunc: null,
-        useFunc: "alter"
+        useFunc: "alter",
+        stepFunc: null
     },
     {
         name:"D_STICK",
@@ -76,8 +79,20 @@ Global.objTypes = [
         alt: null,
         blocking: true,
         doFunc: "AI",
-        useFunc: null
-    }
+        useFunc: null,
+        stepFunc: null
+    },
+    //TODO PICKUPS
+    /*{
+        name:"P_MED",
+        texName: "MEDTEX",
+        alt: null,
+        blocking: true,
+        doFunc: null,
+        useFunc: null,
+        stepFunc: "pickup",
+        pickupName: "T_MED"
+    }*/
 
 ];
 Global.tileTypes = [
@@ -190,8 +205,8 @@ th= 0.1508 //9 degrees 1/10 of a turn
 Global.lrot = new Mat2D(Math.cos(th), -Math.sin(th), Math.sin(th), Math.cos(th));
 Global.rrot = new Mat2D(Math.cos(-th), -Math.sin(-th), Math.sin(-th), Math.cos(-th));
 
-Global.l90rot = new Mat2D(0, -1, 1, 0);
-Global.r90rot = new Mat2D(0, 1, -1, 0);
+Global.r90rot = new Mat2D(0, -1, 1, 0);
+Global.l90rot = new Mat2D(0, 1, -1, 0);
 
 Global.debugScale = 100;
 function getObjectType(objname)

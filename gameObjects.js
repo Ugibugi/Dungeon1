@@ -113,6 +113,9 @@ class Player {
         this.down = false;
         this.left = false;
         this.right = false;
+        this.sleft = false;
+        this.sright = false;
+
         this.pos = new Vec2D(1.5, 1.5);
         this.dir = new Vec2D(1, 0);
         this.cam = new Vec2D(0, 1.3);
@@ -163,9 +166,9 @@ class Player {
                 if (!futureTile.blocking) {
                     this.moving = true;
                     this.counter = this.invSpeed;
+                    turnUsed = true;
                 }
                 this.up = false;
-                turnUsed = true;
             }
             if (this.down) {
                 this.dPos = mul(this.dir, -this.speed);
@@ -174,9 +177,37 @@ class Player {
                 if (!futureTile.blocking) {
                     this.moving = true;
                     this.counter = this.invSpeed;
+                    turnUsed = true;
                 }
                 this.down = false;
-                turnUsed = true;
+            }
+            if(this.sleft)
+            {
+                let delta = trans(Global.l90rot, this.dir)
+                this.dPos = mul(delta, this.speed);
+
+                let futurePos = floor(add(this.pos, delta));
+                let futureTile = map.at(futurePos);
+                if (!futureTile.blocking) {
+                    this.moving = true;
+                    this.counter = this.invSpeed;
+                    turnUsed = true;
+                }
+                this.sleft = false;
+            }
+            if(this.sright)
+            {
+                let delta = trans(Global.r90rot, this.dir)
+                this.dPos = mul(delta, this.speed);
+
+                let futurePos = floor(add(this.pos, delta));
+                let futureTile = map.at(futurePos);
+                if (!futureTile.blocking) {
+                    this.moving = true;
+                    this.counter = this.invSpeed;
+                    turnUsed = true;
+                }
+                this.sright = false;
             }
             if(this.rotating)
             {

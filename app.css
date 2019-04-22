@@ -1,22 +1,23 @@
-﻿body {
+body {
     font-family: 'Segoe UI', sans-serif;
+    margin:0px;
 }
 
 span {
     font-style: italic;
 }
-#controls
-{
-    width:800px;
-    height:100px;
+#display{   
+    width: 100vw;
+    height: 50vh;
 }
 .key
 {
     display: inline-block;
-    width:30%;
-    height: 100%;
+    
+    width:33vw;
+    height: 15vh;
     background-color: #202020;
     color: white;
     text-align: center;
-    padding:10px;
+    margin:-1px;
 }
