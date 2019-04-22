@@ -117,6 +117,7 @@ class Player {
         this.sright = false;
 
         this.pos = new Vec2D(1.5, 1.5);
+        this.futurePos = mul(this.pos,1);
         this.dir = new Vec2D(1, 0);
         this.cam = new Vec2D(0, 1.3);
         this.use = false;
@@ -151,98 +152,96 @@ class Player {
         }
 
     }
-    update(map)
+    updateMovement()
     {
-        let turnUsed = false;
-        if (this.moving) {
+        if (this.moving)
+        {
             this.move();
         }
-        else
+        else if(this.rotating)
         {
-            if (this.up) {
-                this.dPos = mul(this.dir, this.speed);
-                let futurePos = floor(add(this.pos, this.dir));
-                let futureTile = map.at(futurePos);
-                if (!futureTile.blocking) {
-                    this.moving = true;
-                    this.counter = this.invSpeed;
-                    turnUsed = true;
-                }
-                this.up = false;
-            }
-            if (this.down) {
-                this.dPos = mul(this.dir, -this.speed);
-                let futurePos = floor(sub(this.pos, this.dir));
-                let futureTile = map.at(futurePos);
-                if (!futureTile.blocking) {
-                    this.moving = true;
-                    this.counter = this.invSpeed;
-                    turnUsed = true;
-                }
-                this.down = false;
-            }
-            if(this.sleft)
-            {
-                let delta = trans(Global.l90rot, this.dir)
-                this.dPos = mul(delta, this.speed);
-
-                let futurePos = floor(add(this.pos, delta));
-                let futureTile = map.at(futurePos);
-                if (!futureTile.blocking) {
-                    this.moving = true;
-                    this.counter = this.invSpeed;
-                    turnUsed = true;
-                }
-                this.sleft = false;
-            }
-            if(this.sright)
-            {
-                let delta = trans(Global.r90rot, this.dir)
-                this.dPos = mul(delta, this.speed);
-
-                let futurePos = floor(add(this.pos, delta));
-                let futureTile = map.at(futurePos);
-                if (!futureTile.blocking) {
-                    this.moving = true;
-                    this.counter = this.invSpeed;
-                    turnUsed = true;
-                }
-                this.sright = false;
-            }
-            if(this.rotating)
-            {
-                this.rotate();
-            }
-            else
-            {
-
-                if (this.left) {
-                    this.trn = Global.lrot;
-            
-                    this.rotCount = this.invrotspd;
-                    this.rotating = true;
-                    this.left = false;
-                }
-                if (this.right) {
-                    this.trn = Global.rrot;
-
-                    this.rotCount = this.invrotspd;
-                    this.rotating = true;
-                    this.right = false;
-                }
-            }
-            if(this.use)
-            {
-                let usedTile = map.at(floor(add(this.pos, this.dir)));
-                let usedObj = usedTile.object;
-                if(usedObj != null)
-                {
-                    usedObj.useFunc();
-                }
-                usedTile.update();
-                this.use = false;
+            this.rotate();
+        }
+    }
+    updateControls(map)
+    {
+        let turnUsed = false;
+       
+        if (this.up) {
+            this.dPos = mul(this.dir, this.speed);
+            this.futurePos = floor(add(this.pos, this.dir));
+            let futureTile = map.at(this.futurePos);
+            if (!futureTile.blocking) {
+                this.moving = true;
+                this.counter = this.invSpeed;
                 turnUsed = true;
             }
+            this.up = false;
+        }
+        if (this.down) {
+            this.dPos = mul(this.dir, -this.speed);
+            this.futurePos = floor(sub(this.pos, this.dir));
+            let futureTile = map.at(this.futurePos);
+            if (!futureTile.blocking) {
+                this.moving = true;
+                this.counter = this.invSpeed;
+                turnUsed = true;
+            }
+            this.down = false;
+        }
+        if(this.sleft)
+        {
+            let delta = trans(Global.l90rot, this.dir)
+            this.dPos = mul(delta, this.speed);
+
+            this.futurePos = floor(add(this.pos, delta));
+            let futureTile = map.at(this.futurePos);
+            if (!futureTile.blocking) {
+                this.moving = true;
+                this.counter = this.invSpeed;
+                turnUsed = true;
+            }
+            this.sleft = false;
+        }
+        if(this.sright)
+        {
+            let delta = trans(Global.r90rot, this.dir)
+            this.dPos = mul(delta, this.speed);
+
+            this.futurePos = floor(add(this.pos, delta));
+            let futureTile = map.at(this.futurePos);
+            if (!futureTile.blocking) {
+                this.moving = true;
+                this.counter = this.invSpeed;
+                turnUsed = true;
+            }
+            this.sright = false;
+        }
+        if (this.left) {
+            this.trn = Global.lrot;
+    
+            this.rotCount = this.invrotspd;
+            this.rotating = true;
+            this.left = false;
+        }
+        if (this.right) {
+            this.trn = Global.rrot;
+
+            this.rotCount = this.invrotspd;
+            this.rotating = true;
+            this.right = false;
+        }
+        if(this.use)
+        {
+            let usedTile = map.at(floor(add(this.pos, this.dir)));
+            let usedObj = usedTile.object;
+            if(usedObj != null)
+            {
+                usedObj.useFunc();
+            }
+            usedTile.update();
+            this.use = false;
+            turnUsed = true;
         }
         return turnUsed;
     }

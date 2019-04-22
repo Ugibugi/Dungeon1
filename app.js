@@ -1,6 +1,5 @@
 /*
 TODO:
-    -Full movement
     -Flats rendering
     -Settings control
     -Messages
@@ -23,16 +22,22 @@ class App {
         this.map.load(Global.map01);
         console.log("Placing player...");
         this.player = new Player();
+        this.playerMoved = false;
     }
     update()
     {
-        if(this.player.update(this.map))
+        
+        if(!this.playerMoved)this.playerMoved = this.player.updateControls(this.map);
+    
+        if(this.playerMoved && !this.player.moving)
         {
             for(let it in this.map.objects)
             {
                 this.map.objects[it].doFunc();
             }
+            this.playerMoved = false;
         }
+        this.player.updateMovement(this.map);
     }
 }
     
@@ -70,7 +75,7 @@ function moveAI(entity)
         }
         else 
         {
-            console.log("        moving");
+            console.log("        moving (");
             app.map.at(entity.pos).clearObj();
             app.map.at(destPos).place(entity);
             entity.pos = destPos;

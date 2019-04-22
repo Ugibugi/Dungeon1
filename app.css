@@ -19,5 +19,7 @@ span {
     background-color: #202020;
     color: white;
     text-align: center;
-    margin:-1px;
+    margin:-2px;
+    padding:-1px;
+    border: 1px beige solid white
 }

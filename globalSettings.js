@@ -79,7 +79,7 @@ Global.objTypes = [
         alt: null,
         blocking: true,
         doFunc: "AI",
-        useFunc: null,
+        useFunc: "hurt",
         stepFunc: null
     },
     //TODO PICKUPS
@@ -207,6 +207,8 @@ Global.rrot = new Mat2D(Math.cos(-th), -Math.sin(-th), Math.sin(-th), Math.cos(-
 
 Global.r90rot = new Mat2D(0, -1, 1, 0);
 Global.l90rot = new Mat2D(0, 1, -1, 0);
+Global.Ident = new Mat2D(1,0,1,0);
+Global.negIdent = new Mat2D(-1,0,-1,0);
 
 Global.debugScale = 100;
 function getObjectType(objname)
