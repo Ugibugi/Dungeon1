@@ -34,7 +34,7 @@ Global.resList = [
     {
         type: "texture",
         name: "DOOR1O",
-        path : "res/DOR2O.bmp"
+        path : "res/DOR2O.png"
     },
     {
         type: "texture",
