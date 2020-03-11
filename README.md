@@ -1,2 +1,2 @@
 # Dungeon1
-ugibugi.github.io/Dungeon1
+https://ugibugi.github.io/Dungeon1/
